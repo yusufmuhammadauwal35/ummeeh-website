@@ -19,51 +19,52 @@ body{
 /* HEADER */
 .top-bar{
     background:#f68b1e;
-    padding:15px 40px;
+    padding:15px 20px;
     display:flex;
     justify-content:space-between;
     align-items:center;
     color:white;
     flex-wrap:wrap;
+    gap:15px;
 }
 
 .logo{
-    flex:1;
     display:flex;
     justify-content:center;
+    align-items:center;
 }
 
 .logo img{
     height:40px;
+    max-width:100%;
 }
 
 .search-box{
-    flex:1;
     display:flex;
-    justify-content:center;
+    flex:1;
     max-width:500px;
+    width:100%;
 }
 
 .search-box input{
-    width:100%;
+    flex:1;
     padding:10px;
     border:none;
     outline:none;
+    min-width:0;
 }
 
 .search-box button{
     background:black;
     color:white;
     border:none;
-    padding:10px 20px;
+    padding:10px 15px;
     cursor:pointer;
 }
 
 .header-links{
-    flex:1;
     display:flex;
-    justify-content:center;
-    gap:20px;
+    gap:15px;
     align-items:center;
 }
 
@@ -71,6 +72,7 @@ body{
     text-decoration:none;
     color:white;
     font-weight:bold;
+    font-size:14px;
 }
 
 .cart-count{
@@ -80,7 +82,7 @@ body{
     font-size:12px;
 }
 
-/* STICKY NAVIGATION */
+/* NAVIGATION */
 .nav{
     background:white;
     position:sticky;
@@ -95,8 +97,9 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:35px;
+    gap:30px;
     padding:15px 20px;
+    flex-wrap:wrap;
 }
 
 .nav a{
@@ -148,21 +151,23 @@ body{
 
 /* HERO */
 .hero{
-    margin:20px 40px;
+    margin:20px;
     background:linear-gradient(to right,#f68b1e,#ffb347);
-    height:250px;
+    min-height:220px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:32px;
+    font-size:clamp(20px, 4vw, 32px);
     font-weight:bold;
     color:white;
     border-radius:10px;
+    text-align:center;
+    padding:20px;
 }
 
 /* PRODUCTS */
 .products{
-    margin:20px 40px;
+    margin:20px;
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:20px;
@@ -182,8 +187,9 @@ body{
 
 .product img{
     width:100%;
-    height:150px;
+    height:180px;
     object-fit:cover;
+    border-radius:8px;
 }
 
 .price{
@@ -213,18 +219,27 @@ footer{
     text-align:center;
     padding:20px;
     margin-top:40px;
+    font-size:14px;
 }
 
-/* RESPONSIVE */
+/* TABLET */
+@media(max-width:992px){
+    .nav-container{
+        gap:20px;
+    }
+}
+
+/* MOBILE */
 @media(max-width:768px){
 
     .top-bar{
         flex-direction:column;
-        gap:15px;
+        text-align:center;
     }
 
     .search-box{
         width:100%;
+        max-width:100%;
     }
 
     .nav-container{
@@ -232,10 +247,13 @@ footer{
         gap:15px;
     }
 
-    .hero{
-        font-size:22px;
-        text-align:center;
-        padding:20px;
+    .dropdown{
+        position:static;
+        opacity:1;
+        visibility:visible;
+        transform:none;
+        box-shadow:none;
+        padding:5px 0;
     }
 }
 </style>
@@ -245,9 +263,7 @@ footer{
 
 <!-- HEADER -->
 <div class="top-bar">
-
     <div class="logo">
-        <!-- You can replace this link with your own logo image -->
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Jumia-Logo.png" alt="Poco Online Shopping Center Logo">
     </div>
 
@@ -260,13 +276,11 @@ footer{
         <a href="log.html">Login</a>
         <a href="cart.html">Cart 🛒 <span class="cart-count" id="cartCount">0</span></a>
     </div>
-
 </div>
 
 <!-- NAVIGATION -->
 <div class="nav">
     <div class="nav-container">
-
         <a href="home.html">Home</a>
 
         <div class="nav-item">
@@ -288,7 +302,6 @@ footer{
         </div>
 
         <a href="supermarket.html">Supermarket</a>
-
     </div>
 </div>
 
@@ -324,7 +337,7 @@ footer{
 </div>
 
 <footer>
-© 2026 Poco Online Shopping Center | Designed by Yusuf
+© 2026 Poco Online Shopping Center | Develop by Yusuf Auwal (Poco)
 </footer>
 
 <script>
@@ -335,5 +348,6 @@ function addToCart(){
     document.getElementById("cartCount").innerText = count;
 }
 </script>
+
 </body>
 </html>
