@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jumia - TVs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f2f2f2;
+}
+
+/* HEADER */
+.header{
+    background:#f68b1e;
+    padding:15px 40px;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.header a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.cart-count{
+    background:black;
+    padding:3px 8px;
+    border-radius:50%;
+    font-size:12px;
+}
+
+/* LAYOUT */
+.container{
+    display:flex;
+    gap:20px;
+    padding:20px 40px;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:250px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.sidebar h3{
+    margin-bottom:10px;
+    color:#f68b1e;
+}
+
+.sidebar label{
+    display:block;
+    margin-bottom:8px;
+    cursor:pointer;
+}
+
+/* PRODUCTS */
+.products{
+    flex:1;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:20px;
+}
+
+.product{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.product:hover{
+    transform:translateY(-5px);
+}
+
+.product img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+.price{
+    color:#f68b1e;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.btn{
+    background:#f68b1e;
+    color:white;
+    border:none;
+    padding:10px;
+    width:100%;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+.btn:hover{
+    background:black;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    .container{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>Televisions</h2>
+    <a href="cart.html">Cart 🛒 <span class="cart-count" id="cartCount">0</span></a>
+</div>
+
+<div class="container">
+
+    <!-- SIDEBAR FILTER -->
+    <div class="sidebar">
+
+        <h3>Brand</h3>
+        <label><input type="checkbox" value="Samsung" onchange="filterProducts()"> Samsung</label>
+        <label><input type="checkbox" value="LG" onchange="filterProducts()"> LG</label>
+        <label><input type="checkbox" value="Hisense" onchange="filterProducts()"> Hisense</label>
+        <label><input type="checkbox" value="Sony" onchange="filterProducts()"> Sony</label>
+
+        <h3 style="margin-top:20px;">Screen Size</h3>
+        <label><input type="checkbox" value="32" onchange="filterProducts()"> 32"</label>
+        <label><input type="checkbox" value="43" onchange="filterProducts()"> 43"</label>
+        <label><input type="checkbox" value="55" onchange="filterProducts()"> 55"</label>
+        <label><input type="checkbox" value="65" onchange="filterProducts()"> 65"</label>
+
+        <h3 style="margin-top:20px;">Price</h3>
+        <label><input type="radio" name="price" value="low" onchange="filterProducts()"> ₦0 - ₦300,000</label>
+        <label><input type="radio" name="price" value="mid" onchange="filterProducts()"> ₦300,000 - ₦700,000</label>
+        <label><input type="radio" name="price" value="high" onchange="filterProducts()"> ₦700,000+</label>
+
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="products" id="productList"></div>
+
+</div>
+
+<script>
+
+// PRODUCT DATA
+const products = [
+    {name:"Samsung 55\" Smart TV", brand:"Samsung", size:"55", price:650000},
+    {name:"LG 43\" LED TV", brand:"LG", size:"43", price:320000},
+    {name:"Hisense 32\" HD TV", brand:"Hisense", size:"32", price:180000},
+    {name:"Sony 65\" 4K TV", brand:"Sony", size:"65", price:950000},
+    {name:"Samsung 43\" Smart TV", brand:"Samsung", size:"43", price:380000},
+    {name:"LG 55\" OLED TV", brand:"LG", size:"55", price:820000}
+];
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// DISPLAY PRODUCTS
+function displayProducts(list){
+    let container = document.getElementById("productList");
+    container.innerHTML = "";
+
+    list.forEach(product=>{
+        container.innerHTML += `
+        <div class="product">
+            <img src="https://via.placeholder.com/300x200">
+            <h4>${product.name}</h4>
+            <p class="price">₦${product.price}</p>
+            <button class="btn" onclick="addToCart('${product.name}',${product.price})">
+                Add to Cart
+            </button>
+        </div>
+        `;
+    });
+}
+
+// FILTER FUNCTION
+function filterProducts(){
+
+    let selected = Array.from(
+        document.querySelectorAll('.sidebar input[type=checkbox]:checked')
+    ).map(cb=>cb.value);
+
+    let selectedPrice = document.querySelector('input[name=price]:checked');
+    selectedPrice = selectedPrice ? selectedPrice.value : null;
+
+    let filtered = products.filter(product=>{
+
+        let brandOrSizeMatch = selected.length === 0 ||
+            selected.includes(product.brand) ||
+            selected.includes(product.size);
+
+        let priceMatch = true;
+        if(selectedPrice === "low") priceMatch = product.price <= 300000;
+        if(selectedPrice === "mid") priceMatch = product.price > 300000 && product.price <= 700000;
+        if(selectedPrice === "high") priceMatch = product.price > 700000;
+
+        return brandOrSizeMatch && priceMatch;
+    });
+
+    displayProducts(filtered);
+}
+
+// ADD TO CART
+function addToCart(name, price){
+    let item = cart.find(p=>p.name===name);
+
+    if(item){
+        item.quantity++;
+    } else {
+        cart.push({name:name, price:price, quantity:1});
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    alert("Added to cart!");
+}
+
+// UPDATE CART COUNT
+function updateCartCount(){
+    let totalQty = cart.reduce((sum,item)=>sum+item.quantity,0);
+    document.getElementById("cartCount").innerText = totalQty;
+}
+
+updateCartCount();
+displayProducts(products);
+
+</script>
+
+</body>
+</html>

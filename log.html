@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Poco - Login / Signup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f2f2f2;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    background:white;
+    width:400px;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.logo{
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+    color:#f68b1e;
+    margin-bottom:20px;
+}
+
+.tabs{
+    display:flex;
+    margin-bottom:20px;
+}
+
+.tabs button{
+    flex:1;
+    padding:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+    background:#eee;
+}
+
+.tabs button.active{
+    background:#f68b1e;
+    color:white;
+}
+
+.form{
+    display:none;
+}
+
+.form.active{
+    display:block;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-bottom:15px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+.btn{
+    width:100%;
+    padding:10px;
+    border:none;
+    background:#f68b1e;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+.btn:hover{
+    background:black;
+}
+
+.message{
+    text-align:center;
+    margin-top:10px;
+    font-size:14px;
+}
+
+@media(max-width:450px){
+    .container{
+        width:90%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">Poco</div>
+
+    <div class="tabs">
+        <button id="loginTab" class="active" onclick="showLogin()">Login</button>
+        <button id="signupTab" onclick="showSignup()">Signup</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm" class="form active">
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button class="btn" onclick="login()">Login</button>
+        <div class="message" id="loginMessage"></div>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signupForm" class="form">
+        <input type="text" id="signupName" placeholder="Full Name">
+        <input type="email" id="signupEmail" placeholder="Email">
+        <input type="password" id="signupPassword" placeholder="Password">
+        <button class="btn" onclick="signup()">Create Account</button>
+        <div class="message" id="signupMessage"></div>
+    </div>
+
+</div>
+
+<script>
+
+// Switch Tabs
+function showLogin(){
+    document.getElementById("loginForm").classList.add("active");
+    document.getElementById("signupForm").classList.remove("active");
+    document.getElementById("loginTab").classList.add("active");
+    document.getElementById("signupTab").classList.remove("active");
+}
+
+function showSignup(){
+    document.getElementById("signupForm").classList.add("active");
+    document.getElementById("loginForm").classList.remove("active");
+    document.getElementById("signupTab").classList.add("active");
+    document.getElementById("loginTab").classList.remove("active");
+}
+
+// Simple Local Storage System
+function signup(){
+    let name = document.getElementById("signupName").value;
+    let email = document.getElementById("signupEmail").value;
+    let password = document.getElementById("signupPassword").value;
+
+    if(name === "" || email === "" || password === ""){
+        document.getElementById("signupMessage").innerText = "All fields are required!";
+        return;
+    }
+
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userPassword", password);
+
+    document.getElementById("signupMessage").innerText = "Account created successfully!";
+}
+
+function login(){
+    let email = document.getElementById("loginEmail").value;
+    let password = document.getElementById("loginPassword").value;
+
+    let storedEmail = localStorage.getItem("userEmail");
+    let storedPassword = localStorage.getItem("userPassword");
+
+    if(email === storedEmail && password === storedPassword){
+        document.getElementById("loginMessage").innerText = "Login successful!";
+    } else {
+        document.getElementById("loginMessage").innerText = "Invalid email or password!";
+    }
+}
+
+</script>
+
+</body>
+</html>

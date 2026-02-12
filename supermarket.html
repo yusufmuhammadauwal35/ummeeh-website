@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jumia - Supermarket</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f2f2f2;
+}
+
+/* HEADER */
+.header{
+    background:#f68b1e;
+    padding:15px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:white;
+}
+
+.header a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+/* TITLE */
+.title{
+    padding:20px 40px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+/* PRODUCT GRID */
+.products{
+    padding:0 40px 40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px,1fr));
+    gap:20px;
+}
+
+.product{
+    background:white;
+    border-radius:10px;
+    padding:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.product:hover{
+    transform:translateY(-5px);
+}
+
+.product img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    border-radius:5px;
+}
+
+.price{
+    color:#f68b1e;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.btn{
+    background:#f68b1e;
+    color:white;
+    border:none;
+    padding:10px;
+    width:100%;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.btn:hover{
+    background:black;
+}
+
+@media(max-width:768px){
+    .header, .title, .products{
+        padding:20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>Supermarket</h2>
+    <a href="cart.html">Go to Cart 🛒</a>
+</div>
+
+<div class="title">
+    Daily Grocery Deals
+</div>
+
+<div class="products">
+
+    <div class="product">
+        <img src="rice.jpeg">
+        <h4>Bag of Rice (50kg)</h4>
+        <p class="price">₦45,000</p>
+        <button class="btn" onclick="addToCart('Bag of Rice',45000)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <img src="oil.jpeg">
+        <h4>Vegetable Oil (5L)</h4>
+        <p class="price">₦12,000</p>
+        <button class="btn" onclick="addToCart('Vegetable Oil',12000)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <img src="indomie.jpeg">
+        <h4>Indomie Noodles (Carton)</h4>
+        <p class="price">₦8,500</p>
+        <button class="btn" onclick="addToCart('Indomie Noodles',8500)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <img src="drinks.jpeg">
+        <h4>Soft Drinks (Pack)</h4>
+        <p class="price">₦5,000</p>
+        <button class="btn" onclick="addToCart('Soft Drinks',5000)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <img src="milk.jpeg">
+        <h4>Milk Powder</h4>
+        <p class="price">₦6,500</p>
+        <button class="btn" onclick="addToCart('Milk Powder',6500)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <img src="tomato.jpeg">
+        <h4>Tomato Paste Pack</h4>
+        <p class="price">₦3,000</p>
+        <button class="btn" onclick="addToCart('Tomato Paste',3000)">Add to Cart</button>
+    </div>
+
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function saveCart(){
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function addToCart(name, price){
+    let item = cart.find(p => p.name === name);
+
+    if(item){
+        item.quantity++;
+    } else {
+        cart.push({name:name, price:price, quantity:1});
+    }
+
+    saveCart();
+    alert("Item added to cart!");
+}
+</script>
+
+</body>
+</html>

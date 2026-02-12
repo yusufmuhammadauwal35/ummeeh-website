@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Poco - Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f2f2f2;
+}
+
+/* NAVBAR */
+.navbar{
+    background:#f68b1e;
+    padding:15px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:white;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+    font-weight:bold;
+}
+
+/* SEARCH BAR */
+.search-section{
+    padding:20px 40px;
+    background:white;
+    display:flex;
+    gap:10px;
+}
+
+.search-section input{
+    flex:1;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+.search-section button{
+    padding:10px 20px;
+    background:#f68b1e;
+    border:none;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+/* BANNER */
+.banner{
+    background:#fff;
+    margin:20px 40px;
+    padding:40px;
+    text-align:center;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.banner h2{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+/* CATEGORIES */
+.categories{
+    padding:20px 40px;
+}
+
+.category-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:20px;
+}
+
+.category{
+    background:white;
+    padding:20px;
+    text-align:center;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.category:hover{
+    transform:translateY(-5px);
+}
+
+.category a{
+    text-decoration:none;
+    color:black;
+    font-weight:bold;
+}
+
+/* FEATURED PRODUCTS */
+.products{
+    padding:20px 40px 40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.product{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.product img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+.price{
+    color:#f68b1e;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.btn{
+    background:#f68b1e;
+    color:white;
+    border:none;
+    padding:10px;
+    width:100%;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.btn:hover{
+    background:black;
+}
+
+/* FOOTER */
+.footer{
+    background:#222;
+    color:white;
+    text-align:center;
+    padding:20px;
+    margin-top:30px;
+}
+
+@media(max-width:768px){
+    .navbar, .search-section, .banner, .categories, .products{
+        padding:20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">JUMIA</div>
+    <div class="nav-links">
+        <a href="login.html">Login</a>
+        <a href="signup.html">Signup</a>
+        <a href="cart.html">Cart 🛒</a>
+    </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-section">
+    <input type="text" id="searchInput" placeholder="Search products...">
+    <button onclick="searchProduct()">Search</button>
+</div>
+
+<!-- BANNER -->
+<div class="banner">
+    <h2>Welcome to Jumia Clone</h2>
+    <p>Best Online Shopping Experience in Nigeria</p>
+</div>
+
+<!-- CATEGORIES -->
+<div class="categories">
+    <h2>Shop by Category</h2><br>
+
+    <div class="category-grid">
+        <div class="category"><a href="electronics.html">Electronics</a></div>
+        <div class="category"><a href="phones.html">Phones</a></div>
+        <div class="category"><a href="laptops.html">Laptops</a></div>
+        <div class="category"><a href="tvs.html">TVs</a></div>
+        <div class="category"><a href="men.html">Men</a></div>
+        <div class="category"><a href="women.html">Women</a></div>
+        <div class="category"><a href="shoes.html">Shoes</a></div>
+    </div>
+</div>
+
+<!-- FEATURED PRODUCTS -->
+<div class="products">
+
+    <div class="product">
+        <img src="A14.jpeg">
+        <h4>Samsung Galaxy A14</h4>
+        <p class="price">₦150,000</p>
+        <button class="btn" onclick="addToCart('Samsung Galaxy A14',150000)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <img src="sport.avif">
+        <h4>Sport Sneakers</h4>
+        <p class="price">₦35,000</p>
+        <button class="btn" onclick="addToCart('Sport Sneakers',35000)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <img src="lap.png">
+        <h4>HP Laptop</h4>
+        <p class="price">₦420,000</p>
+        <button class="btn" onclick="addToCart('HP Laptop',420000)">Add to Cart</button>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    © 2026 Jumia Clone | Designed by Yusuf
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function saveCart(){
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function addToCart(name, price){
+    let item = cart.find(p => p.name === name);
+
+    if(item){
+        item.quantity++;
+    } else {
+        cart.push({name:name, price:price, quantity:1});
+    }
+
+    saveCart();
+    alert("Added to cart!");
+}
+
+function searchProduct(){
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    alert("Search feature coming soon for: " + input);
+}
+</script>
+
+</body>
+</html>
