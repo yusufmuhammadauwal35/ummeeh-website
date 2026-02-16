@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Jumia - Men's Fashion</title>
+    <title>Poco - Men's Fashion</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -30,6 +30,14 @@ body{
     color:white;
     text-decoration:none;
     font-weight:bold;
+}
+
+.cart-count{
+    background:black;
+    padding:3px 8px;
+    border-radius:50%;
+    font-size:12px;
+    margin-left:5px;
 }
 
 /* PAGE TITLE */
@@ -98,7 +106,7 @@ body{
 
 <div class="header">
     <h2>Men's Fashion</h2>
-    <a href="cart.html">Go to Cart 🛒</a>
+    <a href="cart.html">Cart 🛒 <span class="cart-count" id="cartCount">0</span></a>
 </div>
 
 <div class="title">
@@ -108,42 +116,42 @@ body{
 <div class="products">
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="m leather.jpeg">
         <h4>Men Leather Shoes</h4>
         <p class="price">₦45,000</p>
         <button class="btn" onclick="addToCart('Men Leather Shoes',45000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="wacht.jpeg">
         <h4>Luxury Wrist Watch</h4>
         <p class="price">₦60,000</p>
         <button class="btn" onclick="addToCart('Luxury Wrist Watch',60000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="Casual Top.jpeg">
         <h4>Casual Men's Shirt</h4>
         <p class="price">₦18,000</p>
         <button class="btn" onclick="addToCart('Casual Shirt',18000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="jeans.jpeg">
         <h4>Men's Jeans Trouser</h4>
         <p class="price">₦25,000</p>
         <button class="btn" onclick="addToCart('Men Jeans',25000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="sport.avif">
         <h4>Sport Sneakers</h4>
         <p class="price">₦35,000</p>
         <button class="btn" onclick="addToCart('Sport Sneakers',35000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="hoodie.jpeg">
         <h4>Men Hoodie</h4>
         <p class="price">₦22,000</p>
         <button class="btn" onclick="addToCart('Men Hoodie',22000)">Add to Cart</button>
@@ -152,24 +160,35 @@ body{
 </div>
 
 <script>
+// Load cart from localStorage or initialize
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+// Save cart to localStorage
 function saveCart(){
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
+// Add item to cart
 function addToCart(name, price){
     let item = cart.find(p => p.name === name);
-
     if(item){
         item.quantity++;
     } else {
         cart.push({name:name, price:price, quantity:1});
     }
-
     saveCart();
+    updateCartCount();
     alert("Item added to cart!");
 }
+
+// Update cart count badge
+function updateCartCount(){
+    let totalQty = cart.reduce((sum,item)=>sum+item.quantity,0);
+    document.getElementById("cartCount").innerText = totalQty;
+}
+
+// Initialize cart count on page load
+updateCartCount();
 </script>
 
 </body>

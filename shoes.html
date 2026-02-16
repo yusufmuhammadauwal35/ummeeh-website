@@ -32,6 +32,14 @@ body{
     font-weight:bold;
 }
 
+.cart-count{
+    background:black;
+    padding:3px 8px;
+    border-radius:50%;
+    font-size:12px;
+    margin-left:5px;
+}
+
 /* TITLE */
 .title{
     padding:20px 40px;
@@ -98,78 +106,74 @@ body{
 
 <div class="header">
     <h2>Shoes Collection</h2>
-    <a href="cart.html">Go to Cart 🛒</a>
+    <a href="cart.html">Go to Cart 🛒 <span class="cart-count" id="cartCount">0</span></a>
 </div>
 
 <div class="title">
     Trending Shoes Deals
 </div>
 
-<div class="products">
-
-    <div class="product">
-        <img src="men leather.jpeg">
-        <h4>Men Leather Shoes</h4>
-        <p class="price">₦45,000</p>
-        <button class="btn" onclick="addToCart('Men Leather Shoes',45000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="sport.avif">
-        <h4>Sport Sneakers</h4>
-        <p class="price">₦35,000</p>
-        <button class="btn" onclick="addToCart('Sport Sneakers',35000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="women heels.jpeg">
-        <h4>Women High Heels</h4>
-        <p class="price">₦28,000</p>
-        <button class="btn" onclick="addToCart('Women High Heels',28000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="casual.avif">
-        <h4>Casual Loafers</h4>
-        <p class="price">₦30,000</p>
-        <button class="btn" onclick="addToCart('Casual Loafers',30000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="running.jpeg">
-        <h4>Running Shoes</h4>
-        <p class="price">₦32,000</p>
-        <button class="btn" onclick="addToCart('Running Shoes',32000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="sandals.webp">
-        <h4>Designer Sandals</h4>
-        <p class="price">₦18,000</p>
-        <button class="btn" onclick="addToCart('Designer Sandals',18000)">Add to Cart</button>
-    </div>
-
-</div>
+<div class="products" id="productList"></div>
 
 <script>
+// --- PRODUCT DATA ---
+const products = [
+    {name:"Men Leather Shoes", price:45000, image:"men leather.jpeg"},
+    {name:"Sport Sneakers", price:35000, image:"sport.avif"},
+    {name:"Women High Heels", price:28000, image:"women heels.jpeg"},
+    {name:"Casual Loafers", price:30000, image:"casual.avif"},
+    {name:"Running Shoes", price:32000, image:"running.jpeg"},
+    {name:"Designer Sandals", price:18000, image:"sandals.webp"}
+];
+
+// --- CART SYSTEM ---
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+// Save cart to localStorage
 function saveCart(){
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
+// Add product to cart
 function addToCart(name, price){
     let item = cart.find(p => p.name === name);
-
     if(item){
         item.quantity++;
     } else {
         cart.push({name:name, price:price, quantity:1});
     }
-
     saveCart();
+    updateCartCount();
     alert("Item added to cart!");
 }
+
+// Update cart count badge
+function updateCartCount(){
+    let totalQty = cart.reduce((sum,item)=>sum+item.quantity,0);
+    document.getElementById("cartCount").innerText = totalQty;
+}
+
+// Display products dynamically
+function displayProducts(){
+    const container = document.getElementById("productList");
+    container.innerHTML = "";
+
+    products.forEach(product => {
+        container.innerHTML += `
+        <div class="product">
+            <img src="${product.image}" alt="${product.name}">
+            <h4>${product.name}</h4>
+            <p class="price">₦${product.price}</p>
+            <button class="btn" onclick="addToCart('${product.name}',${product.price})">Add to Cart</button>
+        </div>
+        `;
+    });
+}
+
+// --- INITIALIZE PAGE ---
+updateCartCount();
+displayProducts();
+
 </script>
 
 </body>

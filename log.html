@@ -48,6 +48,7 @@ body{
     cursor:pointer;
     font-weight:bold;
     background:#eee;
+    transition:0.3s;
 }
 
 .tabs button.active{
@@ -80,6 +81,7 @@ input{
     font-weight:bold;
     cursor:pointer;
     border-radius:5px;
+    transition:0.3s;
 }
 
 .btn:hover{
@@ -90,6 +92,11 @@ input{
     text-align:center;
     margin-top:10px;
     font-size:14px;
+    color:red;
+}
+
+.success{
+    color:green;
 }
 
 @media(max-width:450px){
@@ -124,6 +131,7 @@ input{
         <input type="text" id="signupName" placeholder="Full Name">
         <input type="email" id="signupEmail" placeholder="Email">
         <input type="password" id="signupPassword" placeholder="Password">
+        <input type="password" id="signupConfirm" placeholder="Confirm Password">
         <button class="btn" onclick="signup()">Create Account</button>
         <div class="message" id="signupMessage"></div>
     </div>
@@ -131,7 +139,6 @@ input{
 </div>
 
 <script>
-
 // Switch Tabs
 function showLogin(){
     document.getElementById("loginForm").classList.add("active");
@@ -147,37 +154,89 @@ function showSignup(){
     document.getElementById("loginTab").classList.remove("active");
 }
 
-// Simple Local Storage System
-function signup(){
-    let name = document.getElementById("signupName").value;
-    let email = document.getElementById("signupEmail").value;
-    let password = document.getElementById("signupPassword").value;
+// Helper: Simple Hash Function (for demonstration only)
+function simpleHash(str){
+    let hash = 0;
+    for(let i=0;i<str.length;i++){
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash.toString();
+}
 
-    if(name === "" || email === "" || password === ""){
-        document.getElementById("signupMessage").innerText = "All fields are required!";
+// SIGNUP FUNCTION
+function signup(){
+    let name = document.getElementById("signupName").value.trim();
+    let email = document.getElementById("signupEmail").value.trim().toLowerCase();
+    let password = document.getElementById("signupPassword").value;
+    let confirm = document.getElementById("signupConfirm").value;
+    let message = document.getElementById("signupMessage");
+
+    message.classList.remove("success");
+    message.classList.remove("error");
+
+    if(!name || !email || !password || !confirm){
+        message.innerText = "All fields are required!";
         return;
     }
 
-    localStorage.setItem("userEmail", email);
-    localStorage.setItem("userPassword", password);
+    if(password !== confirm){
+        message.innerText = "Passwords do not match!";
+        return;
+    }
 
-    document.getElementById("signupMessage").innerText = "Account created successfully!";
+    if(password.length < 6){
+        message.innerText = "Password must be at least 6 characters!";
+        return;
+    }
+
+    // Get existing users
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+
+    if(users[email]){
+        message.innerText = "Email already registered!";
+        return;
+    }
+
+    // Store hashed password
+    users[email] = {name:name, password:simpleHash(password)};
+    localStorage.setItem("users", JSON.stringify(users));
+
+    message.innerText = "Account created successfully!";
+    message.classList.add("success");
+
+    // Clear inputs
+    document.getElementById("signupName").value = "";
+    document.getElementById("signupEmail").value = "";
+    document.getElementById("signupPassword").value = "";
+    document.getElementById("signupConfirm").value = "";
 }
 
+// LOGIN FUNCTION
 function login(){
-    let email = document.getElementById("loginEmail").value;
+    let email = document.getElementById("loginEmail").value.trim().toLowerCase();
     let password = document.getElementById("loginPassword").value;
+    let message = document.getElementById("loginMessage");
 
-    let storedEmail = localStorage.getItem("userEmail");
-    let storedPassword = localStorage.getItem("userPassword");
+    message.classList.remove("success");
+    message.classList.remove("error");
 
-    if(email === storedEmail && password === storedPassword){
-        document.getElementById("loginMessage").innerText = "Login successful!";
+    if(!email || !password){
+        message.innerText = "All fields are required!";
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+
+    if(users[email] && users[email].password === simpleHash(password)){
+        message.innerText = "Login successful!";
+        message.classList.add("success");
+        // Redirect to homepage after login
+        setTimeout(()=>{ window.location.href = "index.html"; }, 1000);
     } else {
-        document.getElementById("loginMessage").innerText = "Invalid email or password!";
+        message.innerText = "Invalid email or password!";
     }
 }
-
 </script>
 
 </body>

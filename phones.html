@@ -32,6 +32,14 @@ body{
     font-weight:bold;
 }
 
+.cart-count{
+    background:black;
+    padding:3px 8px;
+    border-radius:50%;
+    font-size:12px;
+    margin-left:5px;
+}
+
 /* LAYOUT */
 .container{
     display:flex;
@@ -57,6 +65,16 @@ body{
     display:block;
     margin-bottom:8px;
     cursor:pointer;
+}
+
+/* IMAGE UPLOAD SECTION */
+.image-upload{
+    margin-top:20px;
+}
+
+.image-upload input{
+    display:block;
+    margin-bottom:10px;
 }
 
 /* PRODUCTS */
@@ -105,13 +123,6 @@ body{
     background:black;
 }
 
-.cart-count{
-    background:black;
-    padding:3px 8px;
-    border-radius:50%;
-    font-size:12px;
-}
-
 /* RESPONSIVE */
 @media(max-width:768px){
     .container{
@@ -146,6 +157,14 @@ body{
         <label><input type="radio" name="price" value="low" onchange="filterProducts()"> ₦0 - ₦200,000</label>
         <label><input type="radio" name="price" value="mid" onchange="filterProducts()"> ₦200,000 - ₦500,000</label>
         <label><input type="radio" name="price" value="high" onchange="filterProducts()"> ₦500,000+</label>
+
+        <!-- IMAGE UPLOAD -->
+        <div class="image-upload">
+            <h3>Add Product Image</h3>
+            <input type="file" id="productImageInput" accept="image/*">
+            <button onclick="addImageToProduct()">Add Image</button>
+            <p style="font-size:12px; color:gray;">Select an image to display for a new product.</p>
+        </div>
     </div>
 
     <!-- PRODUCTS -->
@@ -154,48 +173,67 @@ body{
 </div>
 
 <script>
-
-// PRODUCT DATA
+// --- PRODUCT DATA ---
 const products = [
-    {name:"Samsung Galaxy A14", brand:"Samsung", price:150000},
-    {name:"iPhone 13", brand:"Apple", price:650000},
-    {name:"Infinix Note 30", brand:"Infinix", price:180000},
-    {name:"Tecno Camon 20", brand:"Tecno", price:210000},
-    {name:"Samsung S23", brand:"Samsung", price:750000},
-    {name:"iPhone 11", brand:"Apple", price:420000}
+    {name:"Samsung Galaxy A14", brand:"Samsung", price:150000, image:"a14.jpeg"},
+    {name:"iPhone 13", brand:"Apple", price:650000, image:"13.jpeg"},
+    {name:"Infinix Note 30", brand:"Infinix", price:180000, image:"infinx.jpeg"},
+    {name:"Tecno Camon 20", brand:"Tecno", price:210000, image:"tecno 30.jpeg"},
+    {name:"Samsung S23", brand:"Samsung", price:750000, image:"samsung s23.jpeg"},
+    {name:"iPhone 11", brand:"Apple", price:420000, image:"11.jpeg"}
 ];
 
+// --- CART SYSTEM ---
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// DISPLAY PRODUCTS
+// Save cart to localStorage
+function saveCart(){
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+// Add product to cart
+function addToCart(name, price){
+    let item = cart.find(p => p.name === name);
+    if(item){
+        item.quantity++;
+    } else {
+        cart.push({name:name, price:price, quantity:1});
+    }
+    saveCart();
+    updateCartCount();
+    alert("Added to cart!");
+}
+
+// Update cart count badge
+function updateCartCount(){
+    let totalQty = cart.reduce((sum,item)=>sum+item.quantity,0);
+    document.getElementById("cartCount").innerText = totalQty;
+}
+
+// --- DISPLAY PRODUCTS ---
 function displayProducts(list){
-    let container = document.getElementById("productList");
+    const container = document.getElementById("productList");
     container.innerHTML = "";
 
     list.forEach(product=>{
         container.innerHTML += `
         <div class="product">
-            <img src="https://via.placeholder.com/200">
+            <img src="${product.image}">
             <h4>${product.name}</h4>
             <p class="price">₦${product.price}</p>
-            <button class="btn" onclick="addToCart('${product.name}',${product.price})">
-                Add to Cart
-            </button>
+            <button class="btn" onclick="addToCart('${product.name}',${product.price})">Add to Cart</button>
         </div>
         `;
     });
 }
 
-// FILTER FUNCTION
+// --- FILTER PRODUCTS ---
 function filterProducts(){
-    let selectedBrands = Array.from(
-        document.querySelectorAll('input[type=checkbox]:checked')
-    ).map(cb=>cb.value);
-
+    const selectedBrands = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(cb=>cb.value);
     let selectedPrice = document.querySelector('input[name=price]:checked');
     selectedPrice = selectedPrice ? selectedPrice.value : null;
 
-    let filtered = products.filter(product=>{
+    const filtered = products.filter(product=>{
         let brandMatch = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
 
         let priceMatch = true;
@@ -209,30 +247,31 @@ function filterProducts(){
     displayProducts(filtered);
 }
 
-// ADD TO CART
-function addToCart(name, price){
-    let item = cart.find(p=>p.name===name);
-
-    if(item){
-        item.quantity++;
+// --- ADD IMAGE TO PRODUCT ---
+function addImageToProduct(){
+    const input = document.getElementById("productImageInput");
+    if(input.files && input.files[0]){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            // Add a new product with the uploaded image
+            const name = prompt("Enter product name:");
+            const brand = prompt("Enter brand:");
+            const price = parseInt(prompt("Enter price:"));
+            if(name && brand && price){
+                products.push({name:name, brand:brand, price:price, image:e.target.result});
+                displayProducts(products);
+                alert("Product added successfully!");
+            }
+        }
+        reader.readAsDataURL(input.files[0]);
     } else {
-        cart.push({name:name, price:price, quantity:1});
+        alert("Please select an image!");
     }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartCount();
-    alert("Added to cart!");
 }
 
-// CART COUNT
-function updateCartCount(){
-    let totalQty = cart.reduce((sum,item)=>sum+item.quantity,0);
-    document.getElementById("cartCount").innerText = totalQty;
-}
-
+// --- INITIALIZE ---
 updateCartCount();
 displayProducts(products);
-
 </script>
 
 </body>

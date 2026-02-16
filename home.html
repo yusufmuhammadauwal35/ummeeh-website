@@ -24,6 +24,8 @@ body{
     justify-content:space-between;
     align-items:center;
     color:white;
+    flex-wrap:wrap;
+    gap:10px;
 }
 
 .logo{
@@ -44,6 +46,7 @@ body{
     background:white;
     display:flex;
     gap:10px;
+    flex-wrap:wrap;
 }
 
 .search-section input{
@@ -173,7 +176,7 @@ body{
     <div class="nav-links">
         <a href="login.html">Login</a>
         <a href="signup.html">Signup</a>
-        <a href="cart.html">Cart 🛒</a>
+        <a href="cart.html">Cart 🛒 <span id="cartCount">0</span></a>
     </div>
 </div>
 
@@ -205,23 +208,23 @@ body{
 </div>
 
 <!-- FEATURED PRODUCTS -->
-<div class="products">
+<div class="products" id="productList">
 
-    <div class="product">
+    <div class="product" data-name="Samsung Galaxy A14">
         <img src="A14.jpeg">
         <h4>Samsung Galaxy A14</h4>
         <p class="price">₦150,000</p>
         <button class="btn" onclick="addToCart('Samsung Galaxy A14',150000)">Add to Cart</button>
     </div>
 
-    <div class="product">
+    <div class="product" data-name="Sport Sneakers">
         <img src="sport.avif">
         <h4>Sport Sneakers</h4>
         <p class="price">₦35,000</p>
         <button class="btn" onclick="addToCart('Sport Sneakers',35000)">Add to Cart</button>
     </div>
 
-    <div class="product">
+    <div class="product" data-name="HP Laptop">
         <img src="lap.png">
         <h4>HP Laptop</h4>
         <p class="price">₦420,000</p>
@@ -238,27 +241,65 @@ body{
 <script>
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+// Save cart
 function saveCart(){
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
+// Format money
+function formatMoney(amount){
+    return "₦" + amount.toLocaleString();
+}
+
+// Update cart count
+function updateCartCount(){
+    let totalQty = cart.reduce((sum,item)=>sum+item.quantity,0);
+    document.getElementById("cartCount").innerText = totalQty;
+}
+
+// Add to cart
 function addToCart(name, price){
     let item = cart.find(p => p.name === name);
-
     if(item){
         item.quantity++;
     } else {
         cart.push({name:name, price:price, quantity:1});
     }
-
     saveCart();
-    alert("Added to cart!");
+    updateCartCount();
+    showToast(name + " added to cart ✅");
 }
 
+// Toast notification
+function showToast(message){
+    let toast = document.createElement("div");
+    toast.innerText = message;
+    toast.style.position = "fixed";
+    toast.style.bottom = "20px";
+    toast.style.right = "20px";
+    toast.style.background = "#f68b1e";
+    toast.style.color = "white";
+    toast.style.padding = "10px 15px";
+    toast.style.borderRadius = "5px";
+    toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
+    document.body.appendChild(toast);
+
+    setTimeout(()=>toast.remove(),2000);
+}
+
+// Search products
 function searchProduct(){
     let input = document.getElementById("searchInput").value.toLowerCase();
-    alert("Search feature coming soon for: " + input);
+    let products = document.querySelectorAll("#productList .product");
+
+    products.forEach(prod=>{
+        let name = prod.dataset.name.toLowerCase();
+        prod.style.display = name.includes(input) ? "block" : "none";
+    });
 }
+
+// Initialize cart count on load
+updateCartCount();
 </script>
 
 </body>

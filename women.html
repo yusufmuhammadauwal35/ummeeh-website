@@ -98,7 +98,7 @@ body{
 
 <div class="header">
     <h2>Women's Fashion</h2>
-    <a href="cart.html">Go to Cart 🛒</a>
+    <a href="cart.html" id="cartLink">Go to Cart 🛒 (0)</a>
 </div>
 
 <div class="title">
@@ -108,42 +108,42 @@ body{
 <div class="products">
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="gawn.jpeg">
         <h4>Elegant Gown</h4>
         <p class="price">₦35,000</p>
         <button class="btn" onclick="addToCart('Elegant Gown',35000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="bags.jpeg">
         <h4>Women Handbag</h4>
         <p class="price">₦28,000</p>
         <button class="btn" onclick="addToCart('Women Handbag',28000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="women heels.jpeg">
         <h4>High Heel Shoes</h4>
         <p class="price">₦22,000</p>
         <button class="btn" onclick="addToCart('High Heel Shoes',22000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="watch.jpeg">
         <h4>Women Wrist Watch</h4>
         <p class="price">₦40,000</p>
-        <button class="btn" onclick="addToCart('Women Watch',40000)">Add to Cart</button>
+        <button class="btn" onclick="addToCart('Women Wrist Watch',40000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="Casual Top.jpeg">
         <h4>Casual Top</h4>
         <p class="price">₦15,000</p>
         <button class="btn" onclick="addToCart('Casual Top',15000)">Add to Cart</button>
     </div>
 
     <div class="product">
-        <img src="https://via.placeholder.com/300x200">
+        <img src="skirt.jpeg">
         <h4>Designer Skirt</h4>
         <p class="price">₦20,000</p>
         <button class="btn" onclick="addToCart('Designer Skirt',20000)">Add to Cart</button>
@@ -154,22 +154,61 @@ body{
 <script>
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+/* SAVE CART */
 function saveCart(){
     localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
 }
 
+/* UPDATE CART COUNT */
+function updateCartCount(){
+    let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById("cartLink").innerHTML = 
+        `Go to Cart 🛒 (${totalItems})`;
+}
+
+/* ADD TO CART */
 function addToCart(name, price){
     let item = cart.find(p => p.name === name);
 
     if(item){
         item.quantity++;
     } else {
-        cart.push({name:name, price:price, quantity:1});
+        cart.push({
+            name: name,
+            price: price,
+            quantity: 1
+        });
     }
 
     saveCart();
-    alert("Item added to cart!");
+    showToast(name + " added to cart!");
 }
+
+/* TOAST NOTIFICATION */
+function showToast(message){
+    let toast = document.createElement("div");
+    toast.innerText = message;
+
+    toast.style.position = "fixed";
+    toast.style.bottom = "20px";
+    toast.style.right = "20px";
+    toast.style.background = "#f68b1e";
+    toast.style.color = "white";
+    toast.style.padding = "12px 20px";
+    toast.style.borderRadius = "5px";
+    toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
+    toast.style.zIndex = "1000";
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 2000);
+}
+
+/* RUN WHEN PAGE LOADS */
+updateCartCount();
 </script>
 
 </body>

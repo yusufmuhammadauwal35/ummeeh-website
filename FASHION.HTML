@@ -24,6 +24,8 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
 }
 
 .header a{
@@ -37,6 +39,13 @@ body{
     padding:3px 8px;
     border-radius:50%;
     font-size:12px;
+}
+
+.search-box{
+    padding:5px 10px;
+    border-radius:5px;
+    border:none;
+    width:200px;
 }
 
 /* LAYOUT */
@@ -121,6 +130,10 @@ body{
     .sidebar{
         width:100%;
     }
+
+    .search-box{
+        width:100%;
+    }
 }
 </style>
 </head>
@@ -129,6 +142,9 @@ body{
 
 <div class="header">
     <h2>Fashion</h2>
+
+    <input type="text" class="search-box" id="searchInput" placeholder="Search products..." onkeyup="filterProducts()">
+
     <a href="cart.html">Cart 🛒 <span class="cart-count" id="cartCount">0</span></a>
 </div>
 
@@ -160,17 +176,22 @@ body{
 
 <script>
 
-// PRODUCT DATA
+// PRODUCT DATA WITH IMAGES
 const products = [
-    {name:"Men Sneakers", gender:"Men", category:"Shoes", price:25000},
-    {name:"Women Handbag", gender:"Women", category:"Bags", price:45000},
-    {name:"Men T-Shirt", gender:"Men", category:"Clothes", price:15000},
-    {name:"Women Heels", gender:"Women", category:"Shoes", price:35000},
-    {name:"Men Jacket", gender:"Men", category:"Clothes", price:55000},
-    {name:"Women Dress", gender:"Women", category:"Clothes", price:70000}
+    {name:"Men Sneakers", gender:"Men", category:"Shoes", price:25000, image:"sneaker.jpg"},
+    {name:"Women Handbag", gender:"Women", category:"Bags", price:45000, image:"bags.jpeg"},
+    {name:"Men T-Shirt", gender:"Men", category:"Clothes", price:15000, image:"men t.jpeg"},
+    {name:"Women Heels", gender:"Women", category:"Shoes", price:35000, image:"women heels.jpeg"},
+    {name:"Men Jacket", gender:"Men", category:"Clothes", price:55000, image:"m en jacket.jpeg"},
+    {name:"Women Dress", gender:"Women", category:"Clothes", price:70000, image:"w dress.webp"}
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// FORMAT MONEY
+function formatMoney(amount){
+    return "₦" + amount.toLocaleString();
+}
 
 // DISPLAY PRODUCTS
 function displayProducts(list){
@@ -180,9 +201,9 @@ function displayProducts(list){
     list.forEach(product=>{
         container.innerHTML += `
         <div class="product">
-            <img src="https://via.placeholder.com/300x200">
+            <img src="${product.image}" alt="${product.name}">
             <h4>${product.name}</h4>
-            <p class="price">₦${product.price}</p>
+            <p class="price">${formatMoney(product.price)}</p>
             <button class="btn" onclick="addToCart('${product.name}',${product.price})">
                 Add to Cart
             </button>
@@ -193,26 +214,21 @@ function displayProducts(list){
 
 // FILTER FUNCTION
 function filterProducts(){
-
-    let selected = Array.from(
-        document.querySelectorAll('.sidebar input[type=checkbox]:checked')
-    ).map(cb=>cb.value);
+    let searchText = document.getElementById("searchInput").value.toLowerCase();
+    let selected = Array.from(document.querySelectorAll('.sidebar input[type=checkbox]:checked'))
+                        .map(cb=>cb.value);
 
     let selectedPrice = document.querySelector('input[name=price]:checked');
     selectedPrice = selectedPrice ? selectedPrice.value : null;
 
     let filtered = products.filter(product=>{
-
-        let match = selected.length === 0 ||
-            selected.includes(product.gender) ||
-            selected.includes(product.category);
-
+        let matchSearch = product.name.toLowerCase().includes(searchText);
+        let matchCategory = selected.length === 0 || selected.includes(product.gender) || selected.includes(product.category);
         let priceMatch = true;
         if(selectedPrice === "low") priceMatch = product.price <= 20000;
         if(selectedPrice === "mid") priceMatch = product.price > 20000 && product.price <= 60000;
         if(selectedPrice === "high") priceMatch = product.price > 60000;
-
-        return match && priceMatch;
+        return matchSearch && matchCategory && priceMatch;
     });
 
     displayProducts(filtered);
@@ -221,16 +237,14 @@ function filterProducts(){
 // ADD TO CART
 function addToCart(name, price){
     let item = cart.find(p=>p.name===name);
-
     if(item){
         item.quantity++;
     } else {
         cart.push({name:name, price:price, quantity:1});
     }
-
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
-    alert("Added to cart!");
+    showToast(name + " added to cart ✅");
 }
 
 // UPDATE CART COUNT
@@ -239,6 +253,23 @@ function updateCartCount(){
     document.getElementById("cartCount").innerText = totalQty;
 }
 
+// TOAST NOTIFICATION
+function showToast(message){
+    let toast = document.createElement("div");
+    toast.innerText = message;
+    toast.style.position = "fixed";
+    toast.style.bottom = "20px";
+    toast.style.right = "20px";
+    toast.style.background = "#f68b1e";
+    toast.style.color = "white";
+    toast.style.padding = "10px 15px";
+    toast.style.borderRadius = "5px";
+    toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
+    document.body.appendChild(toast);
+    setTimeout(()=>toast.remove(),2000);
+}
+
+// INITIAL LOAD
 updateCartCount();
 displayProducts(products);
 

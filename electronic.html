@@ -24,12 +24,21 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
 }
 
 .header a{
     color:white;
     text-decoration:none;
     font-weight:bold;
+}
+
+.search-box{
+    padding:8px;
+    border:none;
+    border-radius:5px;
+    width:250px;
 }
 
 .container{
@@ -104,12 +113,23 @@ body{
     background:black;
 }
 
+.cart-count{
+    background:black;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:14px;
+}
+
 @media(max-width:768px){
     .container{
         flex-direction:column;
     }
 
     .sidebar{
+        width:100%;
+    }
+
+    .search-box{
         width:100%;
     }
 }
@@ -120,7 +140,16 @@ body{
 
 <div class="header">
     <h2>Electronics</h2>
-    <a href="cart.html">Go to Cart 🛒</a>
+
+    <!-- SEARCH BAR -->
+    <input type="text" class="search-box" id="searchInput" 
+           placeholder="Search products..." 
+           onkeyup="filterProducts()">
+
+    <div>
+        <span class="cart-count" id="cartCount">0 items</span>
+        <a href="cart.html"> Go to Cart 🛒</a>
+    </div>
 </div>
 
 <div class="container">
@@ -128,42 +157,42 @@ body{
     <!-- SIDEBAR FILTER -->
     <div class="sidebar">
         <h3>Brand</h3>
-        <label><input type="checkbox"> Samsung</label>
-        <label><input type="checkbox"> Apple</label>
-        <label><input type="checkbox"> HP</label>
-        <label><input type="checkbox"> Lenovo</label>
+        <label><input type="checkbox" value="Samsung" onchange="filterProducts()"> Samsung</label>
+        <label><input type="checkbox" value="Apple" onchange="filterProducts()"> Apple</label>
+        <label><input type="checkbox" value="HP" onchange="filterProducts()"> HP</label>
+        <label><input type="checkbox" value="Lenovo" onchange="filterProducts()"> Lenovo</label>
 
         <h3 style="margin-top:20px;">Price</h3>
-        <label><input type="radio" name="price"> ₦0 - ₦100,000</label>
-        <label><input type="radio" name="price"> ₦100,000 - ₦300,000</label>
-        <label><input type="radio" name="price"> ₦300,000+</label>
+        <label><input type="radio" name="price" value="0-100000" onchange="filterProducts()"> ₦0 - ₦100,000</label>
+        <label><input type="radio" name="price" value="100000-300000" onchange="filterProducts()"> ₦100,000 - ₦300,000</label>
+        <label><input type="radio" name="price" value="300000+" onchange="filterProducts()"> ₦300,000+</label>
     </div>
 
     <!-- PRODUCTS -->
     <div class="products">
 
-        <div class="product">
+        <div class="product" data-brand="Samsung" data-price="150000">
             <img src="A14.jpeg">
             <h4>Samsung Galaxy A14</h4>
             <p class="price">₦150,000</p>
             <button class="btn" onclick="addToCart('Samsung Galaxy A14',150000)">Add to Cart</button>
         </div>
 
-        <div class="product">
+        <div class="product" data-brand="Apple" data-price="650000">
             <img src="iphone.jpeg">
             <h4>iPhone 13</h4>
             <p class="price">₦650,000</p>
             <button class="btn" onclick="addToCart('iPhone 13',650000)">Add to Cart</button>
         </div>
 
-        <div class="product">
+        <div class="product" data-brand="HP" data-price="420000">
             <img src="lap.png">
             <h4>HP Laptop</h4>
             <p class="price">₦420,000</p>
             <button class="btn" onclick="addToCart('HP Laptop',420000)">Add to Cart</button>
         </div>
 
-        <div class="product">
+        <div class="product" data-brand="Lenovo" data-price="380000">
             <img src="lenevo.jpeg">
             <h4>Lenovo ThinkPad</h4>
             <p class="price">₦380,000</p>
@@ -175,7 +204,15 @@ body{
 </div>
 
 <script>
+
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// Update cart count
+function updateCartCount(){
+    let total = 0;
+    cart.forEach(item => total += item.quantity);
+    document.getElementById("cartCount").innerText = total + " items";
+}
 
 function saveCart(){
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -191,8 +228,60 @@ function addToCart(name, price){
     }
 
     saveCart();
-    alert("Added to cart!");
+    updateCartCount();
+    showToast("Added to cart ✅");
 }
+
+// SEARCH + FILTER FUNCTION
+function filterProducts(){
+
+    let searchText = document.getElementById("searchInput").value.toLowerCase();
+    let selectedBrands = Array.from(document.querySelectorAll("input[type=checkbox]:checked"))
+        .map(cb => cb.value);
+    let selectedPrice = document.querySelector("input[name=price]:checked");
+    let products = document.querySelectorAll(".product");
+
+    products.forEach(product => {
+        let name = product.querySelector("h4").innerText.toLowerCase();
+        let brand = product.dataset.brand;
+        let price = parseInt(product.dataset.price);
+        let show = true;
+
+        if(!name.includes(searchText)) show = false;
+
+        if(selectedBrands.length > 0 && !selectedBrands.includes(brand))
+            show = false;
+
+        if(selectedPrice){
+            let value = selectedPrice.value;
+            if(value === "0-100000" && price > 100000) show = false;
+            if(value === "100000-300000" && (price < 100000 || price > 300000)) show = false;
+            if(value === "300000+" && price < 300000) show = false;
+        }
+
+        product.style.display = show ? "block" : "none";
+    });
+}
+
+// Toast
+function showToast(message){
+    let toast = document.createElement("div");
+    toast.innerText = message;
+    toast.style.position = "fixed";
+    toast.style.bottom = "20px";
+    toast.style.right = "20px";
+    toast.style.background = "#f68b1e";
+    toast.style.color = "white";
+    toast.style.padding = "10px 15px";
+    toast.style.borderRadius = "5px";
+    toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.remove(), 2000);
+}
+
+updateCartCount();
+
 </script>
 
 </body>

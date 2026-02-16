@@ -32,6 +32,14 @@ body{
     font-weight:bold;
 }
 
+.cart-count{
+    background:black;
+    padding:3px 8px;
+    border-radius:50%;
+    font-size:12px;
+    margin-left:5px;
+}
+
 /* TITLE */
 .title{
     padding:20px 40px;
@@ -98,78 +106,73 @@ body{
 
 <div class="header">
     <h2>Supermarket</h2>
-    <a href="cart.html">Go to Cart 🛒</a>
+    <a href="cart.html">Go to Cart 🛒 <span class="cart-count" id="cartCount">0</span></a>
 </div>
 
 <div class="title">
     Daily Grocery Deals
 </div>
 
-<div class="products">
-
-    <div class="product">
-        <img src="rice.jpeg">
-        <h4>Bag of Rice (50kg)</h4>
-        <p class="price">₦45,000</p>
-        <button class="btn" onclick="addToCart('Bag of Rice',45000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="oil.jpeg">
-        <h4>Vegetable Oil (5L)</h4>
-        <p class="price">₦12,000</p>
-        <button class="btn" onclick="addToCart('Vegetable Oil',12000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="indomie.jpeg">
-        <h4>Indomie Noodles (Carton)</h4>
-        <p class="price">₦8,500</p>
-        <button class="btn" onclick="addToCart('Indomie Noodles',8500)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="drinks.jpeg">
-        <h4>Soft Drinks (Pack)</h4>
-        <p class="price">₦5,000</p>
-        <button class="btn" onclick="addToCart('Soft Drinks',5000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="milk.jpeg">
-        <h4>Milk Powder</h4>
-        <p class="price">₦6,500</p>
-        <button class="btn" onclick="addToCart('Milk Powder',6500)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="tomato.jpeg">
-        <h4>Tomato Paste Pack</h4>
-        <p class="price">₦3,000</p>
-        <button class="btn" onclick="addToCart('Tomato Paste',3000)">Add to Cart</button>
-    </div>
-
-</div>
+<div class="products" id="productList"></div>
 
 <script>
+// --- PRODUCT DATA ---
+const products = [
+    {name:"Bag of Rice (50kg)", price:45000, image:"rice.jpeg"},
+    {name:"Vegetable Oil (5L)", price:12000, image:"oil.jpeg"},
+    {name:"Indomie Noodles (Carton)", price:8500, image:"indomie.jpeg"},
+    {name:"Soft Drinks (Pack)", price:5000, image:"drinks.jpeg"},
+    {name:"Milk Powder", price:6500, image:"milk.jpeg"},
+    {name:"Tomato Paste Pack", price:3000, image:"tomato.jpeg"}
+];
+
+// --- CART SYSTEM ---
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+// Save cart to localStorage
 function saveCart(){
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
+// Add product to cart
 function addToCart(name, price){
     let item = cart.find(p => p.name === name);
-
     if(item){
         item.quantity++;
     } else {
         cart.push({name:name, price:price, quantity:1});
     }
-
     saveCart();
+    updateCartCount();
     alert("Item added to cart!");
 }
+
+// Update cart count badge
+function updateCartCount(){
+    let totalQty = cart.reduce((sum,item)=>sum+item.quantity,0);
+    document.getElementById("cartCount").innerText = totalQty;
+}
+
+// Display products dynamically
+function displayProducts(){
+    const container = document.getElementById("productList");
+    container.innerHTML = "";
+
+    products.forEach(product => {
+        container.innerHTML += `
+        <div class="product">
+            <img src="${product.image}" alt="${product.name}">
+            <h4>${product.name}</h4>
+            <p class="price">₦${product.price}</p>
+            <button class="btn" onclick="addToCart('${product.name}',${product.price})">Add to Cart</button>
+        </div>
+        `;
+    });
+}
+
+// --- INITIALIZE PAGE ---
+updateCartCount();
+displayProducts();
 </script>
 
 </body>

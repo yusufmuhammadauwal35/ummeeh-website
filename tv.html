@@ -37,6 +37,34 @@ body{
     padding:3px 8px;
     border-radius:50%;
     font-size:12px;
+    margin-left:5px;
+}
+
+/* ADD PRODUCT FORM */
+.add-product-form{
+    padding:20px 40px;
+    background:white;
+    margin:20px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.add-product-form input, .add-product-form button{
+    margin-right:10px;
+    margin-bottom:10px;
+    padding:5px;
+}
+
+.add-product-form button{
+    background:#f68b1e;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.add-product-form button:hover{
+    background:black;
 }
 
 /* LAYOUT */
@@ -90,6 +118,7 @@ body{
     width:100%;
     height:180px;
     object-fit:cover;
+    border-radius:5px;
 }
 
 .price{
@@ -132,6 +161,19 @@ body{
     <a href="cart.html">Cart 🛒 <span class="cart-count" id="cartCount">0</span></a>
 </div>
 
+<!-- ADD PRODUCT FORM -->
+<div class="add-product-form">
+    <h3>Add New TV</h3>
+    <form id="addProductForm">
+        <input type="text" id="newName" placeholder="Product Name" required>
+        <input type="text" id="newBrand" placeholder="Brand" required>
+        <input type="number" id="newSize" placeholder="Size (inch)" required>
+        <input type="number" id="newPrice" placeholder="Price" required>
+        <input type="file" id="newImage" accept="image/*" required>
+        <button type="submit">Add Product</button>
+    </form>
+</div>
+
 <div class="container">
 
     <!-- SIDEBAR FILTER -->
@@ -162,88 +204,106 @@ body{
 </div>
 
 <script>
-
-// PRODUCT DATA
+// --- PRODUCT DATA ---
 const products = [
-    {name:"Samsung 55\" Smart TV", brand:"Samsung", size:"55", price:650000},
-    {name:"LG 43\" LED TV", brand:"LG", size:"43", price:320000},
-    {name:"Hisense 32\" HD TV", brand:"Hisense", size:"32", price:180000},
-    {name:"Sony 65\" 4K TV", brand:"Sony", size:"65", price:950000},
-    {name:"Samsung 43\" Smart TV", brand:"Samsung", size:"43", price:380000},
-    {name:"LG 55\" OLED TV", brand:"LG", size:"55", price:820000}
+    {name:"Samsung 55\" Smart TV", brand:"Samsung", size:"55", price:650000, image:"samsung tv.jpeg"},
+    {name:"LG 43\" LED TV", brand:"LG", size:"43", price:320000, image:"lg tv.jpeg"},
+    {name:"Hisense 32\" HD TV", brand:"Hisense", size:"32", price:180000, image:"hisense.jpeg"},
+    {name:"Sony 65\" 4K TV", brand:"Sony", size:"65", price:950000, image:"sony.jpeg"},
+    {name:"Samsung 43\" Smart TV", brand:"Samsung", size:"43", price:380000, image:"sam 43.jpeg"},
+    {name:"LG 55\" OLED TV", brand:"LG", size:"55", price:820000, image:"lg 55.jpeg"}
 ];
 
+// --- CART SYSTEM ---
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// DISPLAY PRODUCTS
-function displayProducts(list){
-    let container = document.getElementById("productList");
+function saveCart(){
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function addToCart(name, price){
+    let item = cart.find(p => p.name === name);
+    if(item){
+        item.quantity++;
+    } else {
+        cart.push({name:name, price:price, quantity:1});
+    }
+    saveCart();
+    updateCartCount();
+    alert(name + " added to cart ✅");
+}
+
+function updateCartCount(){
+    let totalQty = cart.reduce((sum,item)=>sum+item.quantity,0);
+    document.getElementById("cartCount").innerText = totalQty;
+}
+
+// --- DISPLAY PRODUCTS ---
+function displayProducts(list = products){
+    const container = document.getElementById("productList");
     container.innerHTML = "";
 
-    list.forEach(product=>{
+    list.forEach(product => {
         container.innerHTML += `
         <div class="product">
-            <img src="https://via.placeholder.com/300x200">
+            <img src="${product.image}" alt="${product.name}">
             <h4>${product.name}</h4>
-            <p class="price">₦${product.price}</p>
-            <button class="btn" onclick="addToCart('${product.name}',${product.price})">
-                Add to Cart
-            </button>
+            <p class="price">₦${product.price.toLocaleString()}</p>
+            <button class="btn" onclick="addToCart('${product.name}',${product.price})">Add to Cart</button>
         </div>
         `;
     });
 }
 
-// FILTER FUNCTION
+// --- FILTER PRODUCTS ---
 function filterProducts(){
-
-    let selected = Array.from(
-        document.querySelectorAll('.sidebar input[type=checkbox]:checked')
-    ).map(cb=>cb.value);
-
+    let selected = Array.from(document.querySelectorAll('.sidebar input[type=checkbox]:checked'))
+                        .map(cb=>cb.value);
     let selectedPrice = document.querySelector('input[name=price]:checked');
     selectedPrice = selectedPrice ? selectedPrice.value : null;
 
-    let filtered = products.filter(product=>{
-
+    const filtered = products.filter(product => {
         let brandOrSizeMatch = selected.length === 0 ||
-            selected.includes(product.brand) ||
-            selected.includes(product.size);
-
+                               selected.includes(product.brand) ||
+                               selected.includes(product.size);
         let priceMatch = true;
         if(selectedPrice === "low") priceMatch = product.price <= 300000;
         if(selectedPrice === "mid") priceMatch = product.price > 300000 && product.price <= 700000;
         if(selectedPrice === "high") priceMatch = product.price > 700000;
-
         return brandOrSizeMatch && priceMatch;
     });
 
     displayProducts(filtered);
 }
 
-// ADD TO CART
-function addToCart(name, price){
-    let item = cart.find(p=>p.name===name);
+// --- ADD PRODUCT FORM HANDLER ---
+document.getElementById("addProductForm").addEventListener("submit", function(e){
+    e.preventDefault();
 
-    if(item){
-        item.quantity++;
-    } else {
-        cart.push({name:name, price:price, quantity:1});
+    const name = document.getElementById("newName").value;
+    const brand = document.getElementById("newBrand").value;
+    const size = document.getElementById("newSize").value;
+    const price = parseInt(document.getElementById("newPrice").value);
+    const fileInput = document.getElementById("newImage");
+
+    if(fileInput.files && fileInput.files[0]){
+        const reader = new FileReader();
+        reader.onload = function(event){
+            const imageData = event.target.result; // Base64 image
+            const newProduct = {name, brand, size, price, image:imageData};
+            products.push(newProduct);
+            displayProducts(products);
+
+            // Clear form
+            document.getElementById("addProductForm").reset();
+        };
+        reader.readAsDataURL(fileInput.files[0]);
     }
+});
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartCount();
-    alert("Added to cart!");
-}
-
-// UPDATE CART COUNT
-function updateCartCount(){
-    let totalQty = cart.reduce((sum,item)=>sum+item.quantity,0);
-    document.getElementById("cartCount").innerText = totalQty;
-}
-
+// --- INITIALIZE PAGE ---
 updateCartCount();
-displayProducts(products);
+displayProducts();
 
 </script>
 

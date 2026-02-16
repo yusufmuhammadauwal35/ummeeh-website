@@ -1,274 +1,249 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Poco Online Shopping Center</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#f2f2f2;
-}
-
-/* HEADER */
-.top-bar{
-    background:#f68b1e;
-    padding:15px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    color:white;
-    flex-wrap:wrap;
-}
-
-.logo{
-    flex:1;
-    display:flex;
-    justify-content:center;
-}
-
-.logo img{
-    height:40px;
-}
-
-.search-box{
-    flex:1;
-    display:flex;
-    justify-content:center;
-    max-width:500px;
-}
-
-.search-box input{
-    width:100%;
-    padding:10px;
-    border:none;
-    outline:none;
-}
-
-.search-box button{
-    background:black;
-    color:white;
-    border:none;
-    padding:10px 20px;
-    cursor:pointer;
-}
-
-.header-links{
-    flex:1;
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    align-items:center;
-}
-
-.header-links a{
-    text-decoration:none;
-    color:white;
-    font-weight:bold;
-}
-
-.cart-count{
-    background:black;
-    padding:3px 8px;
-    border-radius:50%;
-    font-size:12px;
-}
-
-/* STICKY NAVIGATION */
-.nav{
-    background:white;
-    position:sticky;
-    top:0;
-    z-index:1000;
-    box-shadow:0 2px 10px rgba(0,0,0,0.05);
-}
-
-.nav-container{
-    max-width:1200px;
-    margin:auto;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:35px;
-    padding:15px 20px;
-}
-
-.nav a{
-    text-decoration:none;
-    color:#333;
-    font-weight:bold;
-    transition:0.3s;
-}
-
-.nav a:hover{
-    color:#f68b1e;
-}
-
-.nav-item{
-    position:relative;
-}
-
-/* DROPDOWN */
-.dropdown{
-    position:absolute;
-    top:40px;
-    left:0;
-    background:white;
-    padding:10px 0;
-    min-width:150px;
-    opacity:0;
-    visibility:hidden;
-    transform:translateY(10px);
-    transition:all 0.3s ease;
-    box-shadow:0 5px 15px rgba(0,0,0,0.15);
-    border-radius:5px;
-}
-
-.dropdown a{
-    display:block;
-    padding:10px 15px;
-    font-weight:normal;
-}
-
-.dropdown a:hover{
-    background:#f2f2f2;
-}
-
-.nav-item:hover .dropdown{
-    opacity:1;
-    visibility:visible;
-    transform:translateY(0);
-}
-
-/* HERO */
-.hero{
-    margin:20px 40px;
-    background:linear-gradient(to right,#f68b1e,#ffb347);
-    height:250px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:32px;
-    font-weight:bold;
-    color:white;
-    border-radius:10px;
-}
-
-/* PRODUCTS */
-.products{
-    margin:20px 40px;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-}
-
-.product{
-    background:white;
-    padding:15px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-    transition:0.3s;
-}
-
-.product:hover{
-    transform:translateY(-5px);
-}
-
-.product img{
-    width:100%;
-    height:150px;
-    object-fit:cover;
-}
-
-.price{
-    color:#f68b1e;
-    font-weight:bold;
-    margin:10px 0;
-}
-
-.btn{
-    background:#f68b1e;
-    color:white;
-    border:none;
-    padding:10px;
-    width:100%;
-    cursor:pointer;
-    border-radius:5px;
-}
-
-.btn:hover{
-    background:black;
-}
-
-/* FOOTER */
-footer{
-    background:#333;
-    color:white;
-    text-align:center;
-    padding:20px;
-    margin-top:40px;
-}
-
-/* RESPONSIVE */
-@media(max-width:768px){
-
-    .top-bar{
-        flex-direction:column;
-        gap:15px;
-    }
-
-    .search-box{
-        width:100%;
-    }
-
-    .nav-container{
-        flex-direction:column;
-        gap:15px;
-    }
-
-    .hero{
-        font-size:22px;
-        text-align:center;
-        padding:20px;
-    }
-}
-</style>
+    <title>Poco Online Shopping Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+            transition:0.3s;
+        }
+        body{
+            background:#f2f2f2;
+        }
+        /* DARK MODE */
+        .dark-mode{
+            background:#121212;
+            color:white;
+        }
+        .dark-mode .product,
+        .dark-mode .dropdown,
+        .dark-mode .nav,
+        .dark-mode .top-bar,
+        .dark-mode .hero{
+            background:#1e1e1e;
+            color:white;
+        }
+        /* HEADER */
+        .top-bar{
+            background:#f68b1e;
+            padding:15px 40px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            color:white;
+            flex-wrap:wrap;
+        }
+        .logo{
+            flex:1;
+            display:flex;
+            justify-content:center;
+        }
+        .logo img{
+            height:40px;
+        }
+        .search-box{
+            flex:1;
+            display:flex;
+            justify-content:center;
+            max-width:500px;
+        }
+        .search-box input{
+            width:100%;
+            padding:10px;
+            border:none;
+            outline:none;
+        }
+        .search-box button{
+            background:black;
+            color:white;
+            border:none;
+            padding:10px 20px;
+            cursor:pointer;
+        }
+        .header-links{
+            flex:1;
+            display:flex;
+            justify-content:center;
+            gap:20px;
+            align-items:center;
+        }
+        .header-links a{
+            text-decoration:none;
+            color:white;
+            font-weight:bold;
+        }
+        .cart-count{
+            background:black;
+            padding:3px 8px;
+            border-radius:50%;
+            font-size:12px;
+        }
+        /* STICKY NAVIGATION */
+        .nav{
+            background:white;
+            position:sticky;
+            top:0;
+            z-index:1000;
+            box-shadow:0 2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-container{
+            max-width:1200px;
+            margin:auto;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:35px;
+            padding:15px 20px;
+        }
+        .nav a{
+            text-decoration:none;
+            color:#333;
+            font-weight:bold;
+            transition:0.3s;
+        }
+        .nav a:hover{
+            color:#f68b1e;
+        }
+        .nav-item{
+            position:relative;
+        }
+        /* DROPDOWN */
+        .dropdown{
+            position:absolute;
+            top:40px;
+            left:0;
+            background:white;
+            padding:10px 0;
+            min-width:150px;
+            opacity:0;
+            visibility:hidden;
+            transform:translateY(10px);
+            transition:all 0.3s ease;
+            box-shadow:0 5px 15px rgba(0,0,0,0.15);
+            border-radius:5px;
+        }
+        .dropdown a{
+            display:block;
+            padding:10px 15px;
+            font-weight:normal;
+        }
+        .dropdown a:hover{
+            background:#f2f2f2;
+        }
+        .nav-item:hover .dropdown{
+            opacity:1;
+            visibility:visible;
+            transform:translateY(0);
+        }
+        /* HERO */
+        .hero{
+            margin:20px 40px;
+            background:linear-gradient(to right,#f68b1e,#ffb347);
+            height:250px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-size:32px;
+            font-weight:bold;
+            color:white;
+            border-radius:10px;
+            text-align:center;
+        }
+        /* PRODUCTS */
+        .products{
+            margin:20px 40px;
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:20px;
+        }
+        .product{
+            background:white;
+            padding:15px;
+            border-radius:10px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.1);
+            transition:0.3s;
+            cursor:pointer;
+        }
+        .product:hover{
+            transform:translateY(-5px);
+        }
+        .product img{
+            width:100%;
+            height:150px;
+            object-fit:cover;
+        }
+        .price{
+            color:#f68b1e;
+            font-weight:bold;
+            margin:10px 0;
+        }
+        .btn{
+            background:#f68b1e;
+            color:white;
+            border:none;
+            padding:10px;
+            width:100%;
+            cursor:pointer;
+            border-radius:5px;
+        }
+        .btn:hover{
+            background:black;
+        }
+        /* FOOTER */
+        footer{
+            background:#333;
+            color:white;
+            text-align:center;
+            padding:20px;
+            margin-top:40px;
+        }
+        /* RESPONSIVE */
+        @media(max-width:768px){
+            .top-bar{
+                flex-direction:column;
+                gap:15px;
+            }
+            .search-box{
+                width:100%;
+            }
+            .nav-container{
+                flex-direction:column;
+                gap:15px;
+            }
+            .hero{
+                font-size:22px;
+                text-align:center;
+                padding:20px;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
 <!-- HEADER -->
 <div class="top-bar">
-
     <div class="logo">
-        <!-- You can replace this link with your own logo image -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Jumia-Logo.png" alt="Poco Online Shopping Center Logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Jumia-Logo.png" alt="Poco Logo">
     </div>
-
     <div class="search-box">
         <input type="text" placeholder="Search products">
         <button>Search</button>
     </div>
-
     <div class="header-links">
         <a href="log.html">Login</a>
         <a href="cart.html">Cart 🛒 <span class="cart-count" id="cartCount">0</span></a>
+        <button onclick="toggleDarkMode()">🌙</button>
     </div>
-
 </div>
 
 <!-- NAVIGATION -->
 <div class="nav">
     <div class="nav-container">
-
         <a href="home.html">Home</a>
-
         <div class="nav-item">
             <a href="electronic.html">Electronics</a>
             <div class="dropdown">
@@ -277,18 +252,15 @@ footer{
                 <a href="tv.html">TVs</a>
             </div>
         </div>
-
         <div class="nav-item">
-            <a href="FASHION.HTML">Fashion</a>
+            <a href="fashion.html">Fashion</a>
             <div class="dropdown">
                 <a href="men.html">Men</a>
                 <a href="women.html">Women</a>
                 <a href="shoes.html">Shoes</a>
             </div>
         </div>
-
         <a href="supermarket.html">Supermarket</a>
-
     </div>
 </div>
 
@@ -299,41 +271,83 @@ footer{
 
 <!-- PRODUCTS -->
 <div class="products">
-
     <div class="product">
-        <img src="smartphone.jpeg">
+        <img src="smartphone.jpeg" alt="">
         <h4>Smartphone</h4>
         <p class="price">₦120,000</p>
-        <button class="btn" onclick="addToCart()">Add to Cart</button>
+        <button class="btn" onclick="addToCart('Smartphone',120000)">Add to Cart</button>
     </div>
-
     <div class="product">
-        <img src="lap.png">
+        <img src="lap.png" alt="">
         <h4>Laptop</h4>
         <p class="price">₦350,000</p>
-        <button class="btn" onclick="addToCart()">Add to Cart</button>
+        <button class="btn" onclick="addToCart('Laptop',350000)">Add to Cart</button>
     </div>
-
     <div class="product">
-        <img src="SNEAKER.jpg">
+        <img src="SNEAKER.jpg" alt="">
         <h4>Sneakers</h4>
         <p class="price">₦25,000</p>
-        <button class="btn" onclick="addToCart()">Add to Cart</button>
+        <button class="btn" onclick="addToCart('Sneakers',25000)">Add to Cart</button>
     </div>
-
 </div>
 
 <footer>
-© 2026 Poco Online Shopping Center | Develop by Yusuf Auwal (Poco)
+    © 2026 Poco Online Shopping Center | Develop by Yusuf Auwal (Poco)
 </footer>
 
+<!-- JAVASCRIPT -->
 <script>
-let count = 0;
+    // CART SYSTEM
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    updateCartCount();
 
-function addToCart(){
-    count++;
-    document.getElementById("cartCount").innerText = count;
-}
+    function addToCart(productName, price){
+        let item = cart.find(p => p.name === productName);
+        if(item){
+            item.quantity++;
+        } else {
+            cart.push({name:productName, price:price, quantity:1});
+        }
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCount();
+        alert(productName + " added to cart!");
+    }
+
+    function updateCartCount(){
+        let total = 0;
+        cart.forEach(item => total += item.quantity);
+        document.getElementById("cartCount").innerText = total;
+    }
+
+    // SEARCH FUNCTIONALITY
+    const searchInput = document.querySelector(".search-box input");
+    const products = document.querySelectorAll(".product");
+    searchInput.addEventListener("keyup", function(){
+        let value = this.value.toLowerCase();
+        products.forEach(product => {
+            let name = product.querySelector("h4").innerText.toLowerCase();
+            product.style.display = name.includes(value) ? "block" : "none";
+        });
+    });
+
+    // HERO BANNER ROTATE
+    let heroMessages = [
+        "MEGA SALE UP TO 70% OFF 🔥",
+        "FREE DELIVERY NATIONWIDE 🚚",
+        "BEST ONLINE SHOPPING EXPERIENCE 🛒"
+    ];
+    let hero = document.querySelector(".hero");
+    let heroIndex = 0;
+    setInterval(() => {
+        heroIndex = (heroIndex + 1) % heroMessages.length;
+        hero.innerText = heroMessages[heroIndex];
+    }, 4000);
+
+    // DARK MODE TOGGLE
+    function toggleDarkMode(){
+        document.body.classList.toggle("dark-mode");
+    }
 </script>
+
 </body>
 </html>
