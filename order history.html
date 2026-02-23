@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order History - Poco Online Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; background:#f2f2f2; padding:20px; }
+        h2 { text-align:center; margin-bottom:20px; }
+        .order { background:white; padding:15px; margin-bottom:15px; border-radius:8px; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+        .order h4 { margin-bottom:5px; color:#f68b1e; display:inline-block; }
+        .order p { margin:5px 0; }
+        .item { margin-left:15px; }
+        .btn { padding:5px 10px; margin-top:10px; border:none; border-radius:5px; cursor:pointer; }
+        .delete-btn { background:red; color:white; }
+        .clear-btn { background:black; color:white; margin-bottom:20px; }
+    </style>
+</head>
+<body>
+    <h2>Your Order History</h2>
+    <button class="btn clear-btn" onclick="clearAllOrders()">Clear All Orders</button>
+    <div id="ordersContainer"></div>
+
+    <script>
+        const ordersContainer = document.getElementById("ordersContainer");
+
+        // Load orders from localStorage
+        let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+        // Function to display all orders
+        function displayOrders(){
+            ordersContainer.innerHTML = "";
+
+            if(orders.length === 0){
+                ordersContainer.innerHTML = "<p>No orders yet.</p>";
+                return;
+            }
+
+            orders.forEach((order, index) => {
+                let html = `<div class="order">
+                    <h4>Order Reference: ${order.reference}</h4>
+                    <button class="btn delete-btn" onclick="deleteOrder(${index})">Delete</button>
+                    <p>Date: ${order.date}</p>
+                    <p>Total: ₦${order.total}</p>
+                    <p>Items:</p>
+                    <ul>`;
+                order.items.forEach(item => {
+                    html += `<li class="item">${item.name} x ${item.quantity} - ₦${item.price}</li>`;
+                });
+                html += `</ul></div>`;
+                ordersContainer.innerHTML += html;
+            });
+        }
+
+        // Delete a single order by index
+        function deleteOrder(index){
+            if(confirm("Are you sure you want to delete this order?")){
+                orders.splice(index, 1);
+                localStorage.setItem("orders", JSON.stringify(orders));
+                displayOrders();
+            }
+        }
+
+        // Clear all orders
+        function clearAllOrders(){
+            if(confirm("Are you sure you want to clear all order history?")){
+                orders = [];
+                localStorage.removeItem("orders");
+                displayOrders();
+            }
+        }
+
+        // Initial display
+        displayOrders();
+    </script>
+</body>
+</html>

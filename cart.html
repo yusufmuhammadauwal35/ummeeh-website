@@ -1,112 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Poco Online Shopping Center Cart</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poco Online Shopping Center Cart</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://js.paystack.co/v1/inline.js"></script>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#f2f2f2;
-    padding:20px;
-}
-
-h1{
-    color:#f68b1e;
-    margin-bottom:20px;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+body{background:#f2f2f2;padding:20px;}
+h1{color:#f68b1e;margin-bottom:20px;}
 
 .products{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:20px;
-    margin-bottom:40px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+margin-bottom:40px;
 }
 
 .product{
-    background:white;
-    padding:15px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-    text-align:center;
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+text-align:center;
 }
 
-.product img{
-    width:100%;
-    height:150px;
-    object-fit:cover;
-}
+.product img{width:100%;height:150px;object-fit:cover;}
 
-.price{
-    color:#f68b1e;
-    font-weight:bold;
-    margin:10px 0;
-}
+.price{color:#f68b1e;font-weight:bold;margin:10px 0;}
 
-button{
-    padding:8px 12px;
-    border:none;
-    cursor:pointer;
-    border-radius:5px;
-}
+button{padding:6px 10px;border:none;cursor:pointer;border-radius:4px;}
 
-.add-btn{
-    background:#f68b1e;
-    color:white;
-}
+.add-btn{background:#f68b1e;color:white;}
 
 .cart{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 .cart-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:15px;
-    border-bottom:1px solid #ddd;
-    padding-bottom:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+border-bottom:1px solid #ddd;
+padding-bottom:10px;
+gap:10px;
 }
 
-.quantity button{
-    background:black;
-    color:white;
-    padding:3px 8px;
+.qty-btn{
+background:#f68b1e;
+color:white;
+padding:3px 8px;
 }
 
-.remove{
-    background:red;
-    color:white;
-}
+.remove{background:red;color:white;font-size:12px;margin-top:4px;}
 
-.total{
-    text-align:right;
-    font-size:18px;
-    font-weight:bold;
-    margin-top:15px;
-}
+.total{font-weight:bold;margin-top:15px;}
 
-.clear-btn{
-    margin-top:10px;
-    background:black;
-    color:white;
-}
+.pay-btn{background:green;color:white;width:100%;padding:10px;font-size:16px;margin-top:10px;}
 
-@media(max-width:600px){
-    .cart-item{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:5px;
-    }
+input, textarea, select{
+width:100%;
+padding:8px;
+margin-bottom:10px;
 }
 </style>
 </head>
@@ -115,169 +74,260 @@ button{
 
 <h1>Poco Cart System 🛒</h1>
 
-<!-- PRODUCTS -->
 <div class="products">
-
-    <div class="product">
-        <img src="smartphone.jpeg">
-        <h4>Smartphone</h4>
-        <p class="price">120000</p>
-        <button class="add-btn" onclick="addToCart('Smartphone',120000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="lap.png">
-        <h4>Laptop</h4>
-        <p class="price">350000</p>
-        <button class="add-btn" onclick="addToCart('Laptop',350000)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-        <img src="SNEAKER.jpg">
-        <h4>Sneakers</h4>
-        <p class="price">25000</p>
-        <button class="add-btn" onclick="addToCart('Sneakers',25000)">Add to Cart</button>
-    </div>
-
+<div class="product">
+<img src="smartphone.jpeg">
+<h4>Smartphone</h4>
+<p class="price">120000</p>
+<button class="add-btn" onclick="addToCart('Smartphone',120000)">Add to Cart</button>
 </div>
 
-<!-- CART SECTION -->
+<div class="product">
+<img src="lap.png">
+<h4>Laptop</h4>
+<p class="price">350000</p>
+<button class="add-btn" onclick="addToCart('Laptop',350000)">Add to Cart</button>
+</div>
+</div>
+
 <div class="cart">
-    <h2>Your Cart</h2>
-    <div id="cartItems"></div>
-    <div class="total" id="totalPrice">Total: ₦0 | Items: 0</div>
-    <button class="clear-btn" onclick="clearCart()">Clear Cart</button>
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+<div class="total" id="totalPrice">Total: ₦0</div>
+
+<button onclick="clearCart()" style="background:red;color:white;width:100%;margin-top:8px;">
+Clear All Cart
+</button>
+
+<h3>Delivery</h3>
+<select id="deliveryOption" onchange="displayCart()">
+<option value="0">Pickup (Free)</option>
+<option value="3000">Standard - ₦3,000</option>
+<option value="7000">Express - ₦7,000</option>
+</select>
+
+<h3>Discount Coupon</h3>
+<input type="text" id="couponCode" placeholder="Enter coupon code">
+<button onclick="applyCoupon()" style="background:black;color:white;">
+Apply Coupon
+</button>
+<p id="couponMessage" style="font-size:13px;"></p>
+
+<h3>Customer Details</h3>
+<input type="text" id="custName" placeholder="Full Name">
+<input type="email" id="custEmail" placeholder="Email">
+<input type="text" id="custPhone" placeholder="Phone">
+<textarea id="custAddress" placeholder="Address"></textarea>
+
+<h3>Payment Method</h3>
+<select id="paymentMethod">
+<option value="">Select Payment</option>
+<option value="card">Card / Bank (Paystack)</option>
+<option value="bank">Manual Bank Transfer</option>
+</select>
+
+<button class="pay-btn" onclick="processPayment()">Pay Now</button>
 </div>
 
 <script>
 
-// Load cart from localStorage
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let discountPercent = 0;
 
-// Format money
-function formatMoney(amount){
-    return "₦" + amount.toLocaleString();
-}
-
-// Save cart
 function saveCart(){
-    localStorage.setItem("cart", JSON.stringify(cart));
+localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-// Add to cart
 function addToCart(name, price){
-    let item = cart.find(p => p.name === name);
-
-    if(item){
-        item.quantity++;
-    } else {
-        cart.push({name, price, quantity:1});
-    }
-
-    showToast(name + " added to cart ✅");
-    saveCart();
-    displayCart();
+let item = cart.find(p => p.name === name);
+if(item){ item.quantity++; }
+else{ cart.push({name,price,quantity:1}); }
+saveCart();
+displayCart();
 }
 
-// Display cart
-function displayCart(){
-    const cartItems = document.getElementById("cartItems");
-    const totalPrice = document.getElementById("totalPrice");
-
-    cartItems.innerHTML = "";
-
-    if(cart.length === 0){
-        cartItems.innerHTML = "<p>Your cart is empty 🛒</p>";
-        totalPrice.innerText = "Total: ₦0 | Items: 0";
-        return;
-    }
-
-    let total = 0;
-    let itemCount = 0;
-
-    cart.forEach((item, index) => {
-
-        total += item.price * item.quantity;
-        itemCount += item.quantity;
-
-        const div = document.createElement("div");
-        div.classList.add("cart-item");
-
-        div.innerHTML = `
-            <div>
-                <strong>${item.name}</strong><br>
-                ${formatMoney(item.price)} x ${item.quantity}
-            </div>
-
-            <div class="quantity">
-                <button onclick="changeQty(${index},1)">+</button>
-                <button onclick="changeQty(${index},-1)">-</button>
-            </div>
-
-            <button class="remove" onclick="removeItem(${index})">Remove</button>
-        `;
-
-        cartItems.appendChild(div);
-    });
-
-    totalPrice.innerText =
-        "Total: " + formatMoney(total) + " | Items: " + itemCount;
+function increaseQty(index){
+cart[index].quantity++;
+saveCart();
+displayCart();
 }
 
-// Change quantity
-function changeQty(index, change){
-    cart[index].quantity += change;
-
-    if(cart[index].quantity <= 0){
-        cart.splice(index,1);
-    }
-
-    saveCart();
-    displayCart();
+function decreaseQty(index){
+if(cart[index].quantity > 1){
+cart[index].quantity--;
+}else{
+cart.splice(index,1);
+}
+saveCart();
+displayCart();
 }
 
-// Remove item
 function removeItem(index){
-    cart.splice(index,1);
-    saveCart();
-    displayCart();
+cart.splice(index,1);
+saveCart();
+displayCart();
 }
 
-// Clear cart
 function clearCart(){
-    if(confirm("Are you sure you want to clear cart?")){
-        cart = [];
-        saveCart();
-        displayCart();
-    }
+if(confirm("Clear all items?")){
+cart = [];
+discountPercent = 0;
+document.getElementById("couponMessage").innerText="";
+saveCart();
+displayCart();
+}
 }
 
-// Toast notification
-function showToast(message){
-    const toast = document.createElement("div");
-    toast.innerText = message;
+function applyCoupon(){
+const code = document.getElementById("couponCode").value.trim().toUpperCase();
+const message = document.getElementById("couponMessage");
 
-    toast.style.position = "fixed";
-    toast.style.bottom = "20px";
-    toast.style.right = "20px";
-    toast.style.background = "#f68b1e";
-    toast.style.color = "white";
-    toast.style.padding = "10px 15px";
-    toast.style.borderRadius = "5px";
-    toast.style.opacity = "0";
-    toast.style.transition = "opacity 0.4s ease";
-
-    document.body.appendChild(toast);
-
-    setTimeout(() => toast.style.opacity = "1", 100);
-
-    setTimeout(() => {
-        toast.style.opacity = "0";
-        setTimeout(() => toast.remove(), 400);
-    }, 2000);
+if(code === "POCO10"){
+discountPercent = 10;
+message.style.color="green";
+message.innerText="10% Discount Applied";
+}
+else if(code === "POCO20"){
+discountPercent = 20;
+message.style.color="green";
+message.innerText="20% Discount Applied";
+}
+else{
+discountPercent = 0;
+message.style.color="red";
+message.innerText="Invalid Coupon";
 }
 
-// Load cart when page loads
+displayCart();
+}
+
+function displayCart(){
+const cartItems = document.getElementById("cartItems");
+const totalPrice = document.getElementById("totalPrice");
+const deliveryFee = parseInt(document.getElementById("deliveryOption").value);
+
+cartItems.innerHTML = "";
+
+if(cart.length === 0){
+cartItems.innerHTML = "<p>Your cart is empty</p>";
+totalPrice.innerText = "Total: ₦0";
+return;
+}
+
+let subtotal = 0;
+
+cart.forEach((item,index)=>{
+subtotal += item.price * item.quantity;
+
+cartItems.innerHTML += `
+<div class="cart-item">
+<div>
+${item.name}<br>
+₦${item.price.toLocaleString()}
+</div>
+
+<div>
+<button class="qty-btn" onclick="decreaseQty(${index})">−</button>
+${item.quantity}
+<button class="qty-btn" onclick="increaseQty(${index})">+</button>
+</div>
+
+<div>
+₦${(item.price * item.quantity).toLocaleString()}<br>
+<button class="remove" onclick="removeItem(${index})">Remove</button>
+</div>
+</div>
+`;
+});
+
+let discountAmount = (subtotal * discountPercent) / 100;
+let total = subtotal - discountAmount + deliveryFee;
+
+totalPrice.innerHTML = `
+Subtotal: ₦${subtotal.toLocaleString()} <br>
+Discount: −₦${discountAmount.toLocaleString()} <br>
+Delivery: ₦${deliveryFee.toLocaleString()} <br>
+<strong>Total: ₦${total.toLocaleString()}</strong>
+`;
+}
+
+function processPayment(){
+
+if(cart.length === 0){
+alert("Cart is empty!");
+return;
+}
+
+const name = custName.value;
+const email = custEmail.value;
+const phone = custPhone.value;
+const address = custAddress.value;
+const method = document.getElementById("paymentMethod").value;
+const deliveryFee = parseInt(document.getElementById("deliveryOption").value);
+
+if(!name || !email || !phone || !address){
+alert("Fill all customer details!");
+return;
+}
+
+let subtotal = 0;
+cart.forEach(item => subtotal += item.price * item.quantity);
+
+let discountAmount = (subtotal * discountPercent) / 100;
+let total = subtotal - discountAmount + deliveryFee;
+
+if(method === "card"){
+
+let handler = PaystackPop.setup({
+key: 'pk_test_xxxxxxxxxxxxxxxx',
+email: email,
+amount: total * 100,
+currency: "NGN",
+ref: 'POCO-' + Math.floor(Math.random()*1000000000),
+
+callback: function(response){
+
+fetch("verify.php",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body: JSON.stringify({
+reference: response.reference,
+cart: cart,
+name: name,
+email: email,
+phone: phone,
+address: address,
+total: total
+})
+})
+.then(res=>res.json())
+.then(data=>{
+if(data.status === "success"){
+alert("Payment Verified!");
+cart = [];
+discountPercent = 0;
+saveCart();
+displayCart();
+window.location.href = "success.php?order_id="+data.order_id;
+}else{
+alert("Verification Failed");
+}
+});
+},
+
+onClose: function(){
+alert("Payment cancelled");
+}
+});
+
+handler.openIframe();
+}
+
+else if(method === "bank"){
+alert("Transfer to:\nBank: Opay Bank\nAccount: 9136969853");
+}
+}
+
 document.addEventListener("DOMContentLoaded", displayCart);
 
 </script>
