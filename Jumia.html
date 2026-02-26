@@ -330,7 +330,6 @@
             product.style.display = name.includes(value) ? "block" : "none";
         });
     });
-
     // HERO BANNER ROTATE
     let heroMessages = [
         "MEGA SALE UP TO 70% OFF 🔥",
@@ -338,7 +337,7 @@
         "BEST ONLINE SHOPPING EXPERIENCE 🛒"
     ];
     let hero = document.querySelector(".hero");
-    let heroIndex = 0;s
+    let heroIndex = 0;
     setInterval(() => {
         heroIndex = (heroIndex + 1) % heroMessages.length;
         hero.innerText = heroMessages[heroIndex];
