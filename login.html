@@ -272,9 +272,18 @@ function login(){
     let users = JSON.parse(localStorage.getItem("users")) || {};
 
     if(users[email] && users[email].password === simpleHash(password)){
+        
+        // SAVE LOGIN SESSION
+        localStorage.setItem("loggedInUser", email);
+
         message.innerText = "Login successful!";
         message.classList.add("success");
-        setTimeout(()=>{ window.location.href = "index.html"; }, 1000);
+
+        // REDIRECT TO HOME PAGE
+        setTimeout(()=>{
+            window.location.href = "jumia.html";
+        },1000);
+
     } else {
         message.innerText = "Invalid email or password!";
     }

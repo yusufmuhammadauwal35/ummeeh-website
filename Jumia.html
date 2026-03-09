@@ -227,14 +227,15 @@
 <!-- HEADER -->
 <div class="top-bar">
     <div class="logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Jumia-Logo.png" alt="Poco Logo">
+        <img src="Poclee.jpg" alt="Poco Logo">
     </div>
     <div class="search-box">
         <input type="text" placeholder="Search products">
         <button>Search</button>
     </div>
     <div class="header-links">
-        <a href="login.html">Login</a>
+        <span id="welcomeUser"></span>
+        <a href="login.html" id="loginLink">Login</a>
         <a href="cart.html">Cart 🛒 <span class="cart-count" id="cartCount">0</span></a>
         <a href="order history.html">Orders 🧾</a>
         <button onclick="toggleDarkMode()">🌙</button>
@@ -297,7 +298,20 @@
 </footer>
 
 <!-- JAVASCRIPT -->
+ 
 <script>
+    // CHECK IF USER IS LOGGED IN
+let loggedUser = localStorage.getItem("loggedInUser");
+
+if(!loggedUser){
+    window.location.href = "login.html";
+}
+let users = JSON.parse(localStorage.getItem("users")) || {};
+
+if(users[loggedUser]){
+    document.getElementById("welcomeUser").innerText = 
+    "Welcome, " + users[loggedUser].name;
+}
     // CART SYSTEM
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     updateCartCount();
